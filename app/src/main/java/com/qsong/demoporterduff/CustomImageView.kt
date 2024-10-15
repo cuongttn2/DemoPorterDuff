@@ -49,80 +49,29 @@ class CustomImageView(context: Context, attrs: AttributeSet) : ImageView(context
         canvas.drawPath(path, paint)
     }
 
-//    fun getMaskedBitmap(originalBitmap: Bitmap): Bitmap {
-//        val maskedBitmap = Bitmap.createBitmap(
-//            originalBitmap.width, originalBitmap.height, Bitmap.Config.ARGB_8888
-//        )
-//        val canvas = Canvas(maskedBitmap)
-//        canvas.drawBitmap(originalBitmap, 0f, 0f, null)
-//
-//        //
-//        val maskPaint = Paint().apply {
-//            xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_IN)
-//        }
-//        canvas.drawPath(path, maskPaint)
-//        return maskedBitmap
-//    }
-
-    //    fun getMaskedBitmap(originalBitmap: Bitmap): Bitmap {
-//        val maskedBitmap = Bitmap.createBitmap(
-//            originalBitmap.width, originalBitmap.height, Bitmap.Config.ARGB_8888
-//        )
-//        val canvas = Canvas(maskedBitmap)
-//
-//        canvas.drawColor(Color.WHITE)
-//
-//        canvas.drawBitmap(originalBitmap, 0f, 0f, null)
-//
-//        val maskPaint = Paint().apply {
-//            xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_IN)
-//            isAntiAlias = true
-//        }
-//
-//        canvas.drawPath(path, maskPaint)
-//
-//        return maskedBitmap
-//    }
-//    fun getMaskedBitmap(originalBitmap: Bitmap): Bitmap {
-//        val maskedBitmap = Bitmap.createBitmap(
-//            originalBitmap.width, originalBitmap.height, Bitmap.Config.ARGB_8888
-//        )
-//        val canvas = Canvas(maskedBitmap)
-//
-//        // Vẽ nền trắng trước
-//        canvas.drawColor(Color.WHITE)
-//
-//        // Tạo Paint cho mask với chế độ SRC_IN
-//        val maskPaint = Paint().apply {
-//            xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_OUT)
-//            isAntiAlias = true  // Để vẽ mượt hơn
-//        }
-//
-//        // Vẽ ảnh gốc lên canvas nhưng chỉ giữ vùng đã tô
-//        canvas.drawBitmap(originalBitmap, 0f, 0f, null)
-//        canvas.drawPath(path, maskPaint)
-//
-//        return maskedBitmap
-//    }
 
     fun getMaskedBitmap(originalBitmap: Bitmap): Bitmap {
-        val maskedBitmap = Bitmap.createBitmap(
-            originalBitmap.width, originalBitmap.height, Bitmap.Config.ARGB_8888
-        )
+        val width = originalBitmap.width
+        val height = originalBitmap.height
+
+        val maskedBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(maskedBitmap)
 
-        // Vẽ nền trắng trước
-        canvas.drawColor(Color.WHITE)
+        canvas.drawColor(Color.TRANSPARENT)
 
-        // Tạo Paint cho mask với chế độ SRC_IN
         val maskPaint = Paint().apply {
-            xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
-            isAntiAlias = true  // Để vẽ mượt hơn
+            style = Paint.Style.FILL
+            color = Color.BLACK
+            isAntiAlias = true
         }
 
-        // Vẽ ảnh gốc lên canvas nhưng chỉ giữ vùng đã tô
-        canvas.drawBitmap(originalBitmap, 0f, 0f, null)
         canvas.drawPath(path, maskPaint)
+
+        val imagePaint = Paint().apply {
+            xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
+        }
+
+        canvas.drawBitmap(originalBitmap, 0f, 0f, imagePaint)
 
         return maskedBitmap
     }
